@@ -8,7 +8,9 @@ export const harvester2 = function (creep) {
         if (!creep.memory.source) {
             source = creep.pos.findInRange(FIND_SOURCES, 1)[0];
             creep.memory.source = source.id;
-        } else source = Game.getObjectById(creep.memory.source);
+        }
+        else
+            source = Game.getObjectById(creep.memory.source);
         creep.harvest(source);
     }
 };
