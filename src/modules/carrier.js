@@ -1,5 +1,5 @@
 /** @param {Creep} creep */
-export const harvester = function (creep) {
+export const carrier = function (creep) {
 
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
         creep.memory.working = false;
@@ -32,9 +32,9 @@ export const harvester = function (creep) {
         }
     }
     else {
-        let sources = creep.room.find(FIND_SOURCES_ACTIVE);
+        let sources = creep.room.find(FIND_DROPPED_RESOURCES);
         if (sources.length) {
-            if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+            if (creep.pickup(sources[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ffaa00' } });
             }
         }
