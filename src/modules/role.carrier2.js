@@ -11,24 +11,16 @@ export const carrier2 = function (creep) {
     }
 
     if (creep.memory.working) {
-        let targets = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+        let targets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => (
-                structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_SPAWN) &&
+                structure.structureType == STRUCTURE_CONTAINER) &&
                 structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
-        if (!targets) {
-            targets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: (structure) => (
-                    structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 300
-            });
-        }
         if (!targets) {
             targets = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
                 filter: (structure) => (
                     structure.structureType == STRUCTURE_TOWER) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) >= 400
             });
         }
         if (targets) {
@@ -43,21 +35,11 @@ export const carrier2 = function (creep) {
         }
     }
     else {
-        let Source2 = Game.flags['source2'];
-        if (!creep.pos.isNearTo(Source2.pos))
-            creep.moveTo(Source2);
-        else {
-            let sources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
-            if (sources) {
-                if (creep.pickup(sources) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
-                }
-            }
-            else {
-                creep.memory.working = true;
-                creep.say('🚧work');
+        let sources = Game.flags['source2'].pos.findInRange(FIND_DROPPED_RESOURCES, 8)[0];
+        if (sources) {
+            if (creep.pickup(sources) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
             }
         }
-
     }
 };

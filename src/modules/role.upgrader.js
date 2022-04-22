@@ -1,16 +1,14 @@
 /** @param {Creep} creep */
 export const upgrader = function (creep) {
 
-    if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
-        creep.memory.upgrading = false;
-        creep.say('🔄withdraw');
+    if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
+        creep.memory.working = false;
     }
-    if (!creep.memory.upgrading && creep.store.getFreeCapacity() == 0) {
-        creep.memory.upgrading = true;
-        creep.say('⚡upgrade');
+    if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
+        creep.memory.working = true;
     }
     
-    if (creep.memory.upgrading) {
+    if (creep.memory.working) {
         if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
             creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
         }
@@ -19,7 +17,7 @@ export const upgrader = function (creep) {
         let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: structure => (
                 structure.structureType == STRUCTURE_CONTAINER) &&
-                structure.store[RESOURCE_ENERGY] > 600
+                structure.store[RESOURCE_ENERGY] > 0
         });
 
         if (container) {

@@ -3,11 +3,9 @@ export const carrier = function (creep) {
 
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
         creep.memory.working = false;
-        creep.say('🔄withdraw');
     }
     if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
         creep.memory.working = true;
-        creep.say('🚧work');
     }
 
     if (creep.memory.working) {
@@ -15,13 +13,13 @@ export const carrier = function (creep) {
             filter: (structure) => (
                 structure.structureType == STRUCTURE_EXTENSION ||
                 structure.structureType == STRUCTURE_SPAWN) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
         if (!targets) {
             targets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (structure) => (
                     structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 100
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             });
         }
         if (!targets) {
@@ -43,15 +41,29 @@ export const carrier = function (creep) {
         }
     }
     else {
-        let sources = creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES);
-        if (sources) {
-            if (creep.pickup(sources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
+        let sources;
+        if (!creep.memory.source) {
+            sources = creep.pos.findClosestByRange(FIND_TOMBSTONES, {
+                filter: (tombstone) => (
+                    tombstone.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                )
+            });
+            if (!sources)
+                sources = Game.flags['source1'].pos.findInRange(FIND_DROPPED_RESOURCES, 16)[0];
+            if (sources)
+                creep.memory.source = sources.id;
+            else {
+                creep.memory.working = true;
             }
         }
-        else {
-            creep.memory.working = true;
-            creep.say('🚧work');
+        else
+            sources = Game.getObjectById(creep.memory.source);
+        if (creep.pickup(sources) == ERR_NOT_IN_RANGE) {
+            creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
         }
+        else {
+            creep.memory.source = undefined;
+        }
+
     }
 };

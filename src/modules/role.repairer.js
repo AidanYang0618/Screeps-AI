@@ -1,16 +1,16 @@
 /** @param {Creep} creep **/
 export const repairer = function (creep) {
 
-    if (creep.memory.repairing && creep.store[RESOURCE_ENERGY] == 0) {
-        creep.memory.repairing = false;
+    if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
+        creep.memory.working = false;
         creep.say('🔄withdraw');
     }
-    if (!creep.memory.repairing && creep.store.getFreeCapacity() == 0) {
-        creep.memory.repairing = true;
+    if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
+        creep.memory.working = true;
         creep.say('🚧repair');
     }
 
-    if (creep.memory.repairing) {
+    if (creep.memory.working) {
         let broken = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: structure =>
                 structure.hits < structure.hitsMax &&
@@ -24,29 +24,21 @@ export const repairer = function (creep) {
     }
     else {
         let ruins = creep.pos.findClosestByPath(FIND_RUINS, {
-            filter: s => s.store[RESOURCE_ENERGY] > 0
+            filter: structure => structure.store[RESOURCE_ENERGY] > 0
         })
-        if (ruins != undefined) {
+        if (ruins) {
             if (creep.withdraw(ruins, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                // move towards it
                 creep.moveTo(ruins);
             }
         }
         else {
-            // find closest container
             let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: structure => (
-                    structure.structureType == STRUCTURE_CONTAINER ||
-                    structure.structureType == STRUCTURE_EXTENSION) &&
-                    structure.store[RESOURCE_ENERGY] > 0
+                    structure.structureType == STRUCTURE_CONTAINER) &&
+                    structure.store[RESOURCE_ENERGY] > 300
             });
 
-            if (container == undefined) {
-                container = creep.room.storage;
-            }
-
-            // if one was found
-            if (container != undefined) {
+            if (container) {
                 // try to withdraw energy, if the container is not in range
                 if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     // move towards it
