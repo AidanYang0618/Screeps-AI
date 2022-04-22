@@ -1,15 +1,15 @@
-/**
- * 
- * @param {string} roleClass Creep的职业
- * @param {number} num 该职业需要维持的数量
- * @param {array<string>} body 该职业的构造部件
- */
-export const renew = function (roleClass, num, body) {
-    let roles = _.filter(Game.creeps, (creep) => creep.memory.role == roleClass);
-    if (roles.length < num) {
-        var newName = roleClass + Game.time;
-        console.log('Spawning new ' + roleClass + ': ' + newName);
-        Game.spawns['Spawn1'].spawnCreep(body, newName,
-            { memory: { role: roleClass } });
+/** @param {Creep} creep */
+export const renew = function (creep) {
+    if (creep.ticksToLive < 300) {
+        if (Game.spawns['Spawn1'].renewCreep(creep) == ERR_NOT_IN_RANGE) {
+            moveTo(Game.spawns['Spawn1']);
+        }
+        else if (Game.spawns['Spawn1'].renewCreep(creep) == OK) {
+        }
+        else
+            return true;
+        return false;
     }
+    else
+        return true;
 };

@@ -3,25 +3,28 @@ export const carrier2 = function (creep) {
 
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
         creep.memory.working = false;
-        creep.say('🔄withdraw');
     }
     if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
         creep.memory.working = true;
-        creep.say('🚧work');
     }
 
     if (creep.memory.working) {
-        let targets = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        let targets = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
             filter: (structure) => (
-                structure.structureType == STRUCTURE_CONTAINER) &&
+                structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_TOWER ||
+                structure.structureType == STRUCTURE_SPAWN) &&
                 structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
         if (!targets) {
-            targets = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {
+            targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => (
-                    structure.structureType == STRUCTURE_TOWER) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) >= 400
+                    structure.structureType == STRUCTURE_CONTAINER) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
             });
+        }
+        if (!targets) {
+            targets = creep.room.storage;
         }
         if (targets) {
             if (creep.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

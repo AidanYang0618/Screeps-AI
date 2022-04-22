@@ -21,16 +21,16 @@ export const loop = ErrorMapper(() => {
     if (harvesters.length < 1) {
         var newName = 'Harvester' + Game.time;
         console.log('Spawning new harvester: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, MOVE, MOVE], newName,
-            { memory: { role: 'harvester' } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE], newName,
+            { memory: { role: 'harvester', working: false } });
     }
 
     let carriers = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier');
     if (carriers.length < 1) {
         let newName = 'Carrier' + Game.time;
         console.log('Spawning new carrier: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], newName,
-            { memory: { role: 'carrier' } });
+        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], newName,
+            { memory: { role: 'carrier', working: false } });
     }
 
     let harvester2s = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester2');
@@ -38,15 +38,15 @@ export const loop = ErrorMapper(() => {
         var newName = 'Harvester' + Game.time;
         console.log('Spawning new harvester2: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, MOVE, MOVE], newName,
-            { memory: { role: 'harvester2' } });
+            { memory: { role: 'harvester2', working: false } });
     }
 
     let carrier2s = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier2');
     if (carrier2s.length < 1) {
         let newName = 'Carrier' + Game.time;
         console.log('Spawning new carrier2: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], newName,
-            { memory: { role: 'carrier2' } });
+        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE,], newName,
+            { memory: { role: 'carrier2', working: false } });
     }
 
     // let repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
@@ -54,24 +54,24 @@ export const loop = ErrorMapper(() => {
     //     let newName = 'repairer' + Game.time;
     //     console.log('Spawning new repairer: ' + newName);
     //     Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE,], newName,
-    //         { memory: { role: 'repairer' } });
+    //         { memory: { role: 'repairer', working: false } });
     // }
 
     let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    if (builders.length < 0) {
+    if (builders.length < 1) {
         let newName = 'Builder' + Game.time;
         console.log('Spawning new builder: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], newName,
-            { memory: { role: 'builder' } });
+            { memory: { role: 'builder', working: false } });
     }
 
 
     let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    if (upgraders.length < 3) {
+    if (upgraders.length < 0) {
         let newName = 'Upgrader' + Game.time;
         console.log('Spawning new upgrader: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, MOVE, WORK, WORK, CARRY, CARRY, MOVE,], newName,
-            { memory: { role: 'upgrader' } });
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, MOVE, WORK, CARRY, CARRY, CARRY, CARRY, MOVE,], newName,
+            { memory: { role: 'upgrader', working: false } });
     }
 
     if (Game.spawns['Spawn1'].spawning) {
@@ -86,16 +86,10 @@ export const loop = ErrorMapper(() => {
     let tower = Game.getObjectById('626126573907dd7f14e1500b');
     if (tower) {
         let closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => (
-                structure.structureType == STRUCTURE_ROAD) &&
-                structure.hits < structure.hitsMax
+            filter: (structure) =>
+                structure.structureType != STRUCTURE_WALL &&
+                structure.hits < structure.hitsMax / 3 * 2
         });
-        if (!closestDamagedStructure) {
-            closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: (structure) =>
-                    structure.hits < structure.hitsMax
-            });
-        }
 
         if (closestDamagedStructure) {
             tower.repair(closestDamagedStructure);
