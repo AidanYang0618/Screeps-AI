@@ -24,11 +24,6 @@ export const carrier2 = function (creep) {
                 creep.moveTo(targets, { visualizePathStyle: { stroke: '#ffffff' } });
             }
         }
-        else {
-            if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
-            }
-        }
     }
     else {
         let sources = Game.flags['source2'].pos.findInRange(FIND_DROPPED_RESOURCES, 8)[0];

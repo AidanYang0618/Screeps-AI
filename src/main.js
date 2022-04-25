@@ -25,7 +25,7 @@ export const loop = ErrorMapper(() => {
     // }
 
     let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    if (upgraders.length < 1) {
+    if (upgraders.length < 2) {
         let newName = 'Upgrader' + Game.time;
         console.log('Spawning new upgrader: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, MOVE, WORK, CARRY, CARRY, CARRY, CARRY, MOVE,], newName,
@@ -81,29 +81,31 @@ export const loop = ErrorMapper(() => {
             { align: 'left', opacity: 0.8 });
     }
 
-    let towers = Game.rooms['E11S39'].find(FIND_STRUCTURES ,(structure) => structure.structureType == StructureTower)[1]
-
-    if (towers) {
-        let closestDamagedStructure = towers.pos.findClosestByRange(FIND_STRUCTURES, {
+    let tower1 = Game.getObjectById('626126573907dd7f14e1500b');
+    let tower2 = Game.getObjectById('6264958e9068a600baa047b7');
+    if (tower1) {
+        let damagedStructure = tower1.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) =>
                 structure.structureType != STRUCTURE_WALL &&
                 structure.hits < structure.hitsMax
         });
 
-        if (!closestDamagedStructure)
-            closestDamagedStructure = towers.pos.findClosestByRange(FIND_STRUCTURES, {
+        if (!damagedStructure)
+            damagedStructure = tower1.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (structure) =>
                     structure.structureType == STRUCTURE_WALL &&
                     structure.hits < structure.hitsMax / 3000
             });
-        
-        if (closestDamagedStructure) {
-            towers.repair(closestDamagedStructure);
+
+        if (damagedStructure) {
+            tower1.repair(damagedStructure);
+            tower2.repair(damagedStructure);
         }
 
-        let closestHostile = towers.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        let closestHostile = tower1.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
         if (closestHostile) {
-            towers.attack(closestHostile);
+            tower1.attack(closestHostile);
+            tower2.attack(closestHostile);
         }
     }
 
