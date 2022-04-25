@@ -11,20 +11,15 @@ export const carrier = function (creep) {
         let targets = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
             filter: (structure) => (
                 structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_TOWER ||
+                // structure.structureType == STRUCTURE_TOWER ||
                 structure.structureType == STRUCTURE_SPAWN) &&
                 structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
-        if (!targets) {
-            targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => (
-                    structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            });
-        }
+        
         if (!targets) {
             targets = creep.room.storage;
         }
+
         if (targets) {
             if (creep.transfer(targets, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(targets, { visualizePathStyle: { stroke: '#ffffff' } });
@@ -34,13 +29,18 @@ export const carrier = function (creep) {
     else {
         let source = creep.pos.findClosestByPath(FIND_RUINS, {
             filter: structure => structure.store[RESOURCE_ENERGY] > 0
-        })
-        if (!source)
-            source = Game.flags['source1'].pos.findInRange(FIND_DROPPED_RESOURCES, 10)[0];
+        });
         if (!source) {
             source = creep.pos.findClosestByPath(FIND_TOMBSTONES, {
                 filter: tombstone =>
-                    tombstone.store[RESOURCE_ENERGY] > 0
+                tombstone.store[RESOURCE_ENERGY] > 0
+            });
+        }
+        if (!source) {
+            source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                filter: (structure) => (
+                    structure.structureType == STRUCTURE_CONTAINER) &&
+                    structure.store[RESOURCE_ENERGY] >= 300
             });
         }
         if (source) {

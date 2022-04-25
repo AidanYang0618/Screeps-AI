@@ -27,7 +27,9 @@ export const builder = function (creep) {
         let ruins = creep.pos.findClosestByPath(FIND_RUINS, {
             filter: structure => structure.store[RESOURCE_ENERGY] > 0
         })
-        if (ruins != undefined) {
+        // if (!ruins)
+        //     ruins = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
+        if (ruins) {
             if (creep.withdraw(ruins, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(ruins);
             }
@@ -36,8 +38,12 @@ export const builder = function (creep) {
             let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: structure => (
                     structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store[RESOURCE_ENERGY] > 0
+                    structure.store[RESOURCE_ENERGY] > 400
             });
+
+            if (!container) {
+                container = creep.room.storage;
+            }
 
             if (container) {
                 if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {

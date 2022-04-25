@@ -17,13 +17,6 @@ export const carrier2 = function (creep) {
                 structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         });
         if (!targets) {
-            targets = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => (
-                    structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-            });
-        }
-        if (!targets) {
             targets = creep.room.storage;
         }
         if (targets) {
