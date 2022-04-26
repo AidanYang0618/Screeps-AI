@@ -16,14 +16,6 @@ export const loop = ErrorMapper(() => {
         }
     }
 
-    // let repairers = _.filter(Game.creeps, (creep) => creep.memory.role == 'repairer');
-    // if (repairers.length < 0) {
-    //     let newName = 'repairer' + Game.time;
-    //     console.log('Spawning new repairer: ' + newName);
-    //     Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE,], newName,
-    //         { memory: { role: 'repairer', working: false } });
-    // }
-
     let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     if (upgraders.length < 2) {
         let newName = 'Upgrader' + Game.time;
@@ -33,7 +25,7 @@ export const loop = ErrorMapper(() => {
     }
 
     let builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-    if (builders.length < 0) {
+    if (builders.length < 1) {
         let newName = 'Builder' + Game.time;
         console.log('Spawning new builder: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE, WORK, CARRY, MOVE], newName,
@@ -60,7 +52,7 @@ export const loop = ErrorMapper(() => {
     if (carriers.length < 1) {
         let newName = 'Carrier' + Game.time;
         console.log('Spawning new carrier: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], newName,
+        Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], newName,
             { memory: { role: 'carrier', working: false } });
     }
 
@@ -83,23 +75,30 @@ export const loop = ErrorMapper(() => {
 
     let tower1 = Game.getObjectById('626126573907dd7f14e1500b');
     let tower2 = Game.getObjectById('6264958e9068a600baa047b7');
-    if (tower1) {
+    if (tower1 && tower2) {
         let damagedStructure = tower1.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) =>
-                structure.structureType != STRUCTURE_WALL &&
-                structure.hits < structure.hitsMax
+                structure.structureType == STRUCTURE_RAMPART &&
+                structure.hits < structure.hitsMax / 1000
         });
 
         if (!damagedStructure)
             damagedStructure = tower1.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (structure) =>
+                    structure.structureType != STRUCTURE_WALL &&
+                    structure.structureType != STRUCTURE_RAMPART &&
+                    structure.hits < structure.hitsMax
+            });
+
+        if (!damagedStructure)
+            damagedStructure = tower1.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (structure) =>
                     structure.structureType == STRUCTURE_WALL &&
-                    structure.hits < structure.hitsMax / 3000
+                    structure.hits < structure.hitsMax / 30000
             });
 
         if (damagedStructure) {
             tower1.repair(damagedStructure);
-            tower2.repair(damagedStructure);
         }
 
         let closestHostile = tower1.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
@@ -118,9 +117,6 @@ export const loop = ErrorMapper(() => {
         if (creep.memory.role == 'harvester2') {
             harvester2(creep);
         }
-        // if (creep.memory.role == 'repairer') {
-        //     repairer(creep);
-        // }
         if (creep.memory.role == 'carrier') {
             carrier(creep);
         }

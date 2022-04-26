@@ -32,5 +32,20 @@ export const carrier2 = function (creep) {
                 creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
             }
         }
+        else {
+            sources = Game.flags['source2'].pos.findInRange(FIND_STRUCTURES, 1, {
+                filter: (structure) =>
+                    structure.structureType == STRUCTURE_CONTAINER
+            })[0];
+            if (sources) {
+                if (creep.withdraw(sources, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(sources);
+                }
+            }
+            else {
+                if (!creep.pos.isNearTo(Game.flags['source1'].pos))
+                    creep.moveTo(Game.flags['source1']);
+            }
+        }
     }
 };

@@ -14,15 +14,7 @@ export const upgrader = function (creep) {
         }
     }
     else {
-        let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: structure => (
-                structure.structureType == STRUCTURE_CONTAINER) &&
-                structure.store[RESOURCE_ENERGY] > 400
-        });
-
-        if (!container) {
-            container = creep.room.storage;
-        }
+        let container = creep.room.storage;
 
         if (container) {
             if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
