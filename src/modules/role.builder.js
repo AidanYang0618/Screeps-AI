@@ -38,7 +38,7 @@ export const builder = function (creep) {
             let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: structure => (
                     structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store[RESOURCE_ENERGY] > 400
+                    structure.store[RESOURCE_ENERGY] > 0
             });
 
             if (!container) {
