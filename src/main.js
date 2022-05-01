@@ -32,13 +32,13 @@ export const loop = ErrorMapper(() => {
             { memory: { role: 'builder', working: false } });
     }
 
-    let minerals = _.filter(Game.creeps, (creep) => creep.memory.role == 'mineral');
-    if (minerals.length < 1) {
-        let newName = 'Mineral' + Game.time;
-        console.log('Spawning new mineral: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], newName,
-            { memory: { role: 'mineral', working: true } });
-    }
+    // let minerals = _.filter(Game.creeps, (creep) => creep.memory.role == 'mineral');
+    // if (minerals.length < 0) {
+    //     let newName = 'Mineral' + Game.time;
+    //     console.log('Spawning new mineral: ' + newName);
+    //     Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], newName,
+    //         { memory: { role: 'mineral', working: true } });
+    // }
 
     let harvester2s = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester2');
     if (harvester2s.length < 1) {
