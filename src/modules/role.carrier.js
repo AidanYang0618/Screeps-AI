@@ -52,6 +52,9 @@ export const carrier = function (creep) {
             if (creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(source);
             }
+            else {
+                creep.memory.working = true;
+            }
         }
     }
 };

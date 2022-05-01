@@ -1,6 +1,7 @@
 import { ErrorMapper } from "./utils/ErrorMapper";
 import { harvester } from './modules/role.harvester';
 import { harvester2 } from "./modules/role.harvester2";
+import { mineral } from "./modules/role.mineral";
 import { carrier } from "./modules/role.carrier";
 import { upgrader } from './modules/role.upgrader';
 import { builder } from './modules/role.builder';
@@ -16,10 +17,10 @@ export const loop = ErrorMapper(() => {
     }
 
     let upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-    if (upgraders.length < 3) {
+    if (upgraders.length < 2) {
         let newName = 'Upgrader' + Game.time;
         console.log('Spawning new upgrader: ' + newName);
-        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE,], newName,
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE,], newName,
             { memory: { role: 'upgrader', working: false } });
     }
 
@@ -31,17 +32,17 @@ export const loop = ErrorMapper(() => {
             { memory: { role: 'builder', working: false } });
     }
 
-    // let carrier2s = _.filter(Game.creeps, (creep) => creep.memory.role == 'carrier2');
-    // if (carrier2s.length < 0) {
-    //     let newName = 'Carrier' + Game.time;
-    //     console.log('Spawning new carrier2: ' + newName);
-    //     Game.spawns['Spawn1'].spawnCreep([CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE, CARRY, CARRY, MOVE], newName,
-    //         { memory: { role: 'carrier2', working: false } });
-    // }
+    let minerals = _.filter(Game.creeps, (creep) => creep.memory.role == 'mineral');
+    if (minerals.length < 1) {
+        let newName = 'Mineral' + Game.time;
+        console.log('Spawning new mineral: ' + newName);
+        Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE], newName,
+            { memory: { role: 'mineral', working: true } });
+    }
 
     let harvester2s = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester2');
     if (harvester2s.length < 1) {
-        var newName = 'Harvester' + Game.time;
+        let newName = 'Harvester' + (Game.time - 37880000);
         console.log('Spawning new harvester2: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, MOVE, MOVE, MOVE], newName,
             { memory: { role: 'harvester2', working: false } });
@@ -57,7 +58,7 @@ export const loop = ErrorMapper(() => {
 
     let harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     if (harvesters.length < 1) {
-        var newName = 'Harvester' + Game.time;
+        let newName = 'Harvester' + Game.time;
         console.log('Spawning new harvester: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, WORK, MOVE, MOVE], newName,
             { memory: { role: 'harvester', working: false } });
@@ -99,7 +100,7 @@ export const loop = ErrorMapper(() => {
                 damagedStructure = tower1.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) =>
                         structure.structureType == STRUCTURE_WALL &&
-                        structure.hits < structure.hitsMax / 30000
+                        structure.hits < structure.hitsMax / 3000
                 });
 
             if (damagedStructure) {
@@ -122,9 +123,9 @@ export const loop = ErrorMapper(() => {
         if (creep.memory.role == 'carrier') {
             carrier(creep);
         }
-        // if (creep.memory.role == 'carrier2') {
-        //     carrier2(creep);
-        // }
+        if (creep.memory.role == 'mineral') {
+            mineral(creep);
+        }
         if (creep.memory.role == 'upgrader') {
             upgrader(creep);
         }
