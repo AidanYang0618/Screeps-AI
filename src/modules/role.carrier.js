@@ -14,7 +14,7 @@ export const carrier = function (creep) {
                     structure.structureType == STRUCTURE_SPAWN) &&
                 structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0) ||
                 (structure.structureType == STRUCTURE_TOWER &&
-                    structure.store[RESOURCE_ENERGY] < 600)
+                    structure.store[RESOURCE_ENERGY] < 900)
         });
 
         if (!targets) {
@@ -41,10 +41,9 @@ export const carrier = function (creep) {
             source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => (
                     structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store[RESOURCE_ENERGY] > 300
+                    structure.store[RESOURCE_ENERGY] > 100
             });
         }
-
         if (!source)
             source = creep.room.storage;
 

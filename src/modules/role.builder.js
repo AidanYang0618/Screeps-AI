@@ -3,18 +3,18 @@ export const builder = function (creep) {
 
     if (creep.memory.working && creep.store[RESOURCE_ENERGY] == 0) {
         creep.memory.working = false;
-        creep.say('🔄withdraw');
+        creep.say('🔄 harvest');
     }
     if (!creep.memory.working && creep.store.getFreeCapacity() == 0) {
         creep.memory.working = true;
-        creep.say('🚧build');
+        creep.say('🚧 build');
     }
 
     if (creep.memory.working) {
-        let targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-        if (targets) {
-            if (creep.build(targets) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(targets, { visualizePathStyle: { stroke: '#ffffff' } });
+        let targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+        if (targets.length) {
+            if (creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffffff' } });
             }
         }
         else {
@@ -24,32 +24,21 @@ export const builder = function (creep) {
         }
     }
     else {
-        let ruins = creep.pos.findClosestByPath(FIND_RUINS, {
-            filter: structure => structure.store[RESOURCE_ENERGY] > 0
-        })
-        // if (!ruins)
-        //     ruins = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES);
-        if (ruins) {
-            if (creep.withdraw(ruins, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(ruins);
+        let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            filter: structure => (
+                structure.structureType == STRUCTURE_CONTAINER) &&
+                structure.store[RESOURCE_ENERGY] > 200
+        });
+
+        if (!container) {
+            container = creep.room.storage;
+        }
+
+        if (container) {
+            if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(container);
             }
         }
-        else {
-            let container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: structure => (
-                    structure.structureType == STRUCTURE_CONTAINER) &&
-                    structure.store[RESOURCE_ENERGY] > 600
-            });
 
-            if (!container) {
-                container = creep.room.storage;
-            }
-
-            if (container) {
-                if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container);
-                }
-            }
-        }
     }
 };
